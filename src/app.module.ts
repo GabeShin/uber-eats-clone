@@ -1,20 +1,32 @@
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
+import * as Joi from 'joi'; // javascript package
+import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { RestaurantsModule } from './restaurants/restaurants.module';
+import EnvConfig from './config/env.config';
+import GraphQLConfig from './config/graphql.config';
+import { RestaurantEntity } from './restaurants/entities/restaurant.entity';
 
 @Module({
   imports: [
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      autoSchemaFile: true,
-      playground: true,
+    ConfigModule.forRoot(EnvConfig),
+    GraphQLModule.forRoot<ApolloDriverConfig>(GraphQLConfig),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: +process.env.DB_PORT,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      logging: process.env.NODE_ENV !== 'prod',
+      synchronize: process.env.NODE_ENV !== 'prod',
+      entities: [RestaurantEntity],
     }),
     RestaurantsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
