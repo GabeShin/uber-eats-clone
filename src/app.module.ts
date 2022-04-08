@@ -1,13 +1,14 @@
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import * as Joi from 'joi'; // javascript package
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RestaurantsModule } from './restaurants/restaurants.module';
 import EnvConfig from './config/env.config';
 import GraphQLConfig from './config/graphql.config';
-import { RestaurantEntity } from './restaurants/entities/restaurant.entity';
+import { UserModule } from './user/user.module';
+import { CommonModule } from './common/common.module';
+import { UserEntity } from './user/entities/user.entity';
 
 @Module({
   imports: [
@@ -22,9 +23,10 @@ import { RestaurantEntity } from './restaurants/entities/restaurant.entity';
       database: process.env.DB_NAME,
       logging: process.env.NODE_ENV !== 'prod',
       synchronize: process.env.NODE_ENV !== 'prod',
-      entities: [RestaurantEntity],
+      entities: [UserEntity],
     }),
-    RestaurantsModule,
+    CommonModule,
+    UserModule,
   ],
   controllers: [],
   providers: [],
