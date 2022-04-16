@@ -213,6 +213,7 @@ export class UserService {
       const user = verification.user;
       user.verified = true;
       await this.users.save(user);
+      await this.verifications.delete(verification.id);
 
       return {
         ok: true,
