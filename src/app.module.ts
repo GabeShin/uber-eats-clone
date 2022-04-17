@@ -5,7 +5,6 @@ import {
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
-import * as Joi from 'joi'; // javascript package
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -18,6 +17,7 @@ import { JwtModule } from './jwt/jwt.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
 import { AuthModule } from './auth/auth.module';
 import { Verification } from './user/entities/verification.entity';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -38,6 +38,11 @@ import { Verification } from './user/entities/verification.entity';
     CommonModule,
     UserModule,
     AuthModule,
+    MailModule.forRoot({
+      apiKey: 'api-key-from-env',
+      domain: 'domain-from-env',
+      fromEmail: 'from-email-from-env-file',
+    }),
   ],
   controllers: [],
   providers: [],
