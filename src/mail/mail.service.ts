@@ -23,8 +23,8 @@ export class MailService {
     sendVerificationEmailInput: SendVerificationEmailInput,
   ): Promise<SendVerificationEmailOutput> {
     return this.sendEmail({
-      subject: sendVerificationEmailInput.subject,
-      template: sendVerificationEmailInput.template,
+      subject: 'Verify your email!',
+      template: 'verification email template',
       emailVars: [{ key: 'code', value: sendVerificationEmailInput.code }],
     });
   }

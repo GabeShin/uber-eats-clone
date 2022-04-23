@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from 'src/jwt/jwt.service';
 import { MailService } from 'src/mail/mail.service';
@@ -12,7 +11,7 @@ import { EditProfileInput, EditProfileOutput } from './dto/edit-profile.dto';
 import { LoginInput, LoginOutput } from './dto/login.dto';
 import { UserProfileInput, UserProfileOutput } from './dto/user-profile.dto';
 import { VerifyEmailInput, VerifyEmailOutput } from './dto/verify-email.dto';
-import { UserEntity as User, UserEntity } from './entities/user.entity';
+import { UserEntity as User } from './entities/user.entity';
 import { Verification } from './entities/verification.entity';
 
 @Injectable()
@@ -52,11 +51,16 @@ export class UserService {
         }),
       );
 
-      await this.verifications.save(
+      const verification = await this.verifications.save(
         this.verifications.create({
           user,
         }),
       );
+
+      this.mailService.sendVerificationEmail({
+        recipient: user.email,
+        code: verification.code,
+      });
 
       return {
         ok: true,
@@ -177,6 +181,9 @@ export class UserService {
         user.password = password;
       }
       await this.users.save(user);
+
+      //todo sendVerificationEmail
+
       return {
         ok: true,
         message: 'User profile edited',

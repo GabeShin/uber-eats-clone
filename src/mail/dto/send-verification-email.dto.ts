@@ -1,8 +1,11 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { SendEmailInput, SendEmailOutput } from './send-email.dto';
+import { SendEmailOutput } from './send-email.dto';
 
 @InputType()
-export class SendVerificationEmailInput extends SendEmailInput {
+export class SendVerificationEmailInput {
+  @Field(() => String)
+  recipient: string;
+
   @Field(() => String)
   code: string;
 }
